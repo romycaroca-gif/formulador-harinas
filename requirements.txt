@@ -1,0 +1,6 @@
+streamlit>=1.39
+pandas
+numpy
+scipy
+openpyxl
+requests

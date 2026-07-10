@@ -1,0 +1,7 @@
+# ⚠️ NUNCA subir la API key a GitHub
+groq_api_key.txt
+.streamlit/secrets.toml
+
+# Basura de Python
+__pycache__/
+*.pyc
