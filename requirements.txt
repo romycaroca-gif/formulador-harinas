@@ -1,6 +1,6 @@
-streamlit>=1.39
-pandas
-numpy
-scipy
-openpyxl
-requests
+streamlit==1.59.1
+pandas==2.2.3
+numpy==1.26.4
+scipy==1.13.1
+openpyxl==3.1.5
+requests==2.32.3
