@@ -1447,6 +1447,6 @@ render_asistente(mez=mez, costos=costos, ph=ph, pa=pa,
 st.divider()
 st.markdown(
     '<div style="text-align:center;font-size:.7rem;color:#94a3b8;">'
-    'DSS reemplazo de ingredientes · Proyecto de título Ingeniería Civil Industrial'
-    'los valores proyectados requieren validación experimental.</div>',
+    'DSS reemplazo de ingredientes · Proyecto de título Ingeniería Civil Industrial.'
+    ' Los valores proyectados requieren validación experimental.</div>',
     unsafe_allow_html=True)
