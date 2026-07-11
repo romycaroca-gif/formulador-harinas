@@ -31,10 +31,8 @@ MAX_TOKENS    = 800
 TEMPERATURA   = 0.4
 MAX_HISTORIAL = 8
 
-SALUDO = ("¡Hola! 👋 Soy el asistente del Formulador. Analizo tu "
-          "formulación **actual** en tiempo real. Usa las opciones "
-          "rápidas o pregúntame algo como *«¿qué ocurriría si subo "
-          "el garbanzo a 20%?»*")
+SALUDO = ("¡Hola! 👋 Soy Alfred, tú asistente del Formulador. "
+          " Pregúntame lo que quieras.")
 
 
 # ──────────────────────────────────────────────────────────────────────
