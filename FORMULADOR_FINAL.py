@@ -1,5 +1,6 @@
 import streamlit as st, pandas as pd, numpy as np, os
 from scipy.optimize import minimize
+from atributos_producto import render_atributos
 
 st.set_page_config(page_title="Formulador Harinas — Marraqueta",
                    page_icon="🍞", layout="wide",
@@ -214,54 +215,60 @@ IBIS_KEY     = next((k for k in ADITIVOS
 IBIS_DOSIS   = 0.4
 MAX_ALT      = {'Maíz':20,'Arroz':15,'Garbanzos':15,'Lentejas':10}
 # ── PESOS DE PENALIZACIÓN para la función objetivo del optimizador ──────────
-# Justificación metodológica (documentar en tesis, Anexo metodológico):
+# Justificación metodológica (documentar en tesis, sección 3.4.2):
 #
-# El peso de cada restricción refleja dos criterios combinados:
-#   (1) ESTRECHEZ DEL RANGO NORMATIVO: límites más estrechos → mayor penalización,
-#       porque pequeñas violaciones tienen impacto proporcional mayor.
-#   (2) IMPACTO TECNOLÓGICO EN MARRAQUETA: propiedades más críticas para la
-#       calidad del producto final reciben mayor peso.
+# JERARQUÍA NORMATIVA (tras análisis del DS 977/96, Párrafos II y III):
+#   El RSA regula el PAN (Art. 356-360), no la composición de la harina usada.
+#   Art. 357: únicos requisitos del pan → humedad ≤36%, acidez ≤0.25%.
+#   Los límites de cenizas/proteína del Art. 349 rigen sólo para la HARINA DE
+#   TRIGO comercializada como tal, NO para la masa panificable ni el pan.
+#   → La sustitución no está prohibida; el Art. 356 sólo obliga a re-denominar.
+#   → Los rangos W, P/L, absorción NO son normativos: son determinantes
+#     TECNOLÓGICOS de referencia (ODEPA) que definen si el producto es marraqueta.
 #
-# Propiedad      Peso  Rango normativo   Justificación
+# El peso de cada restricción refleja su IMPACTO TECNOLÓGICO sobre la marraqueta:
+#
+# Propiedad   Peso  Rango (ref.)  Justificación
 # ─────────────────────────────────────────────────────────────────────────────
-# cenizas          25  ≤ 0.65%           Rango muy estrecho (0.05% de margen).
-#                                        Harinas leguminosas tienen 2-3% →
-#                                        cualquier sustitución lo viola.
-#                                        Impacto: color miga, sabor residual.
-#                                        Fuente: NCh 1237; justificación empírica
-#                                        iterativa (calibración del modelo).
+# W            15   200–260       Determinante primario de la aptitud panadera:
+#                                 mide la energía de deformación de la masa y su
+#                                 capacidad de retener gas → volumen del pan.
+#                                 Sin W mínimo la marraqueta no desarrolla volumen.
+#                                 Fuente: ODEPA; alveógrafo Chopin.
 #
-# absorcion        20  58 – 63%          Rango estrecho (5%). Absorción fuera de
-#                                        rango afecta directamente la consistencia
-#                                        de la masa y el proceso de amasado.
-#                                        Impacto operacional directo (Farinógrafo).
-#                                        Fuente: AACC 54-21; peso iterativo.
+# absorcion    12   58–63         Afecta la consistencia de la masa y el proceso
+#                                 de amasado. Impacto operacional directo, pero no
+#                                 invalida el producto → peso menor que antes.
+#                                 Fuente: farinógrafo AACC 54-21.
 #
-# W               15  200 – 260          Rango amplio (60 unidades). Peso alto
-#                                        porque W es el parámetro más relevante
-#                                        para la aptitud panadera de la harina
-#                                        (Alveógrafo Chopin). Sin W mínimo la
-#                                        marraqueta no desarrolla volumen.
-#                                        Fuente: NCh 1237; literatura reológica.
+# PL           12   0.7–1.6       Define la maquinabilidad y la estructura de la
+#                                 miga (alveolado). Se recalcula desde P y L.
+#                                 Fuente: ODEPA; alveógrafo Chopin.
 #
-# PL              12  0.7 – 1.6          Rango moderado. Equilibrio P/L define
-#                                        la maquinabilidad de la masa. Peso menor
-#                                        que W porque en mezclas con harinas sin
-#                                        gluten el P/L se recalcula indirectamente
-#                                        desde tenacidad/extensibilidad.
+# proteina      8   ≥7            Mínimo legal sobre materias nitrogenadas
+#                                 (DS 977/96 Art. 349 e), N×5.7). Se conserva como
+#                                 piso, pero con peso bajo: la proteína de
+#                                 leguminosa no es funcional (no forma gluten),
+#                                 por lo que W y P/L capturan mejor la estructura.
 #
-# proteina        12  7 – 15%            Rango amplio (8%). La proteína mínima
-#                                        (7%) es fácilmente alcanzable con trigo
-#                                        pero las leguminosas aportan proteína
-#                                        no-gluten que eleva el valor proyectado
-#                                        sin mejorar la red reológica.
-#                                        Peso moderado: menos crítico que W.
-#
-# NOTA: Los pesos fueron calibrados iterativamente para que la función objetivo
-# produzca soluciones factibles en los rangos 5-35% de sustitución. No provienen
-# de literatura directa sino de optimización de hiperparámetros del modelo DSS.
+# cenizas       2   ≤0.65 (ref.)  RECLASIFICADA. El límite de 0.65% rige para la
+#                                 HARINA DE TRIGO (Art. 349 c), no para el pan.
+#                                 Se conserva con peso simbólico sólo como proxy
+#                                 del color de miga (atributo de identidad), no
+#                                 como barrera. Antes tenía peso 25 (ver nota).
 # ─────────────────────────────────────────────────────────────────────────────
-PESOS_PEN = {'W': 15, 'PL': 12, 'absorcion': 20, 'proteina': 12, 'cenizas': 25}
+# NOTA METODOLÓGICA: en versiones previas las cenizas tenían peso 25, bajo la
+# interpretación —incorrecta— de que su límite era normativo para el pan. El
+# análisis del DS 977/96 mostró que ese límite aplica sólo a la harina de trigo.
+# Su reclasificación a peso 2 amplía el espacio de formulaciones factibles y
+# eleva el nivel de sustitución viable. Este cambio es, en sí mismo, un resultado
+# de la tesis (comparar sustitución máxima antes/después).
+#
+# Los pesos relativos se fundamentan en el impacto tecnológico; sus magnitudes
+# exactas fueron calibradas para producir soluciones estables en 5-35% de
+# sustitución (hiperparámetros del modelo).
+# ─────────────────────────────────────────────────────────────────────────────
+PESOS_PEN = {'W': 15, 'PL': 12, 'absorcion': 12, 'proteina': 8, 'cenizas': 2}
 
 # Precios leídos desde hoja PRECIOS_INSUMOS del Excel
 # Fallback a valores por defecto si falta alguna fila
@@ -877,14 +884,14 @@ with c2:
         f'<span style="width:130px;font-size:.72rem;font-weight:700;color:white;">Estado</span></div>',
         unsafe_allow_html=True)
 
-    st.markdown('<div style="font-size:.69rem;color:#64748b;padding:2px 10px;background:#f1f5f9;border-left:3px solid #1e3a5f;margin-bottom:3px;">NORMATIVOS (NCh 1237) — propiedades determinantes</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size:.69rem;color:#64748b;padding:2px 10px;background:#f1f5f9;border-left:3px solid #1e3a5f;margin-bottom:3px;">DETERMINANTES TECNOLÓGICOS (ODEPA) — definen si el producto es marraqueta</div>', unsafe_allow_html=True)
     for clave, label, unidad in [
         ("W",         "Fuerza W",          ""),
         ("PL",        "Relación P/L",      ""),
         ("tenacidad", "Tenacidad P",       "mm"),
         ("extension", "Extensibilidad L",  "mm"),
         ("absorcion", "Absorción agua",    "%"),
-        ("proteina",  "Proteína",          "%"),
+        ("proteina",  "Proteína (mín. legal DS 977/96)", "%"),
     ]:
         val = mez.get(clave, 0)
         rng = rango_str(clave)
@@ -908,6 +915,24 @@ with c2:
 
     if modo_innov:
         st.markdown('<div style="background:#fff7ed;border:1px solid #f59e0b;border-radius:7px;padding:7px 11px;font-size:.77rem;color:#92400e;margin-top:6px;">⚡ Modo Innovación: cenizas ≤1.0%, absorción ≤70%, proteína ≤20%</div>', unsafe_allow_html=True)
+
+    # ── ATRIBUTOS DEL PRODUCTO (traducción reología → pan)
+    st.markdown('<div class="sec" style="margin-top:14px;">🍞 ¿Cómo será el pan?</div>',
+                unsafe_allow_html=True)
+    st.markdown(
+        '<div style="font-size:.71rem;color:#64748b;margin-bottom:8px;">'
+        'Traducción de los parámetros técnicos a las características observables '
+        'de la marraqueta. Predicción cualitativa; requiere validación en horno.</div>',
+        unsafe_allow_html=True)
+    # Humedad estimada del pan: agua de la masa tras pérdida por horneado.
+    # rend_horneado ≈ 0.822 (definido en escalado); si no, se omite el normativo.
+    _abs = mez.get('absorcion', 0)
+    try:
+        _hum_pan = _abs * RENDIMIENTO / (100 + _abs) * 100 \
+                   if _abs > 0 else None
+    except Exception:
+        _hum_pan = None
+    render_atributos(mez, _hum_pan)
 
     # ── MOTOR DE OPTIMIZACIÓN (compacto con expander)
     st.markdown('<div class="sec" style="margin-top:14px;">Motor de Optimización</div>',
