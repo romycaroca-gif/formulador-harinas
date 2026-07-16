@@ -149,16 +149,16 @@ def render_atributos(mez, humedad_pan_pct=None):
     # Índice de panificabilidad como encabezado
     col_ip = {"Óptima": "#16a34a", "Apta": "#16a34a",
               "Marginal": "#d97706", "No apta": "#ef4444"}.get(etq, "#64748b")
-# Color de fondo según el veredicto, con texto siempre blanco legible
-    fondo_ip = {"Óptima": "#15803d", "Apta": "#16a34a",
+# Fondo blanco con borde y texto en el color del veredicto
+    color_ip = {"Óptima": "#15803d", "Apta": "#16a34a",
                 "Marginal": "#d97706", "No apta": "#dc2626"}.get(etq, "#475569")
     st.markdown(
-        f'<div style="background:{fondo_ip};'
-        f'border-radius:10px;padding:12px 16px;margin-bottom:8px;color:#ffffff;'
-        f'box-shadow:0 2px 8px rgba(0,0,0,.15);">'
-        f'<span style="font-size:.72rem;letter-spacing:.5px;opacity:.9;">ÍNDICE DE PANIFICABILIDAD</span><br>'
-        f'<span style="font-size:1.3rem;font-weight:800;">{etq}</span> '
-        f'<span style="font-size:.85rem;opacity:.9;">({ip*100:.0f}/100)</span></div>',
+        f'<div style="background:#ffffff;border:2px solid {color_ip};'
+        f'border-left:6px solid {color_ip};border-radius:10px;'
+        f'padding:12px 16px;margin-bottom:8px;">'
+        f'<span style="font-size:.72rem;letter-spacing:.5px;color:#64748b;">ÍNDICE DE PANIFICABILIDAD</span><br>'
+        f'<span style="font-size:1.3rem;font-weight:800;color:{color_ip};">{etq}</span> '
+        f'<span style="font-size:.85rem;color:#64748b;">({ip*100:.0f}/100)</span></div>',
         unsafe_allow_html=True)
 
     for a in atr:
