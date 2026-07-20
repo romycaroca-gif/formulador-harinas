@@ -424,14 +424,18 @@ def escalar(ph, pa, rec_id, abs_opt, kg):
     agua = rec.get('agua',0) or abs_opt
     lev  = rec.get('levadura', 1.75)
     sal  = rec.get('sal', 2.0)
-    ibis = rec.get('mejorador ibis', 0.4)
+    # El mejorador sólo se incorpora si está efectivamente activo, es decir,
+    # si figura en el diccionario de aditivos con dosis mayor que cero.
+    ibis_activo = (IBIS_KEY is not None and pa.get(IBIS_KEY, 0) > 0)
+    ibis = rec.get('mejorador ibis', 0.4) if ibis_activo else 0.0
     ings = {}
     for h,f in ph.items():
         if f > 0: ings[h] = round(f*kg*1000, 1)
     for a,f in pa.items():
         if f > 0 and (IBIS_KEY is None or a != IBIS_KEY):
             ings[a] = round(f*kg*1000, 1)
-    ings[f'Mejorador IBIS ({ibis}%)'] = round(ibis/100*kg*1000, 1)
+    if ibis > 0:
+        ings[f'Mejorador IBIS ({ibis}%)'] = round(ibis/100*kg*1000, 1)
     ings[f'Agua ({agua:.1f}%)']       = round(agua/100*kg*1000, 1)
     ings[f'Levadura ({lev}%)']        = round(lev/100*kg*1000, 1)
     ings[f'Sal ({sal}%)']             = round(sal/100*kg*1000, 1)
