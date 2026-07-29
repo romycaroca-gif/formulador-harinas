@@ -208,7 +208,7 @@ except Exception as e:
     st.stop()
 
 RENDIMIENTO  = float(ESCALADO.get('rendimiento_pct', 82.2)) / 100
-PESO_PAN_G   = float(ESCALADO.get('peso_pan_g', 210))
+PESO_PAN_G   = float(ESCALADO.get('peso_pan_g', 105))
 KG_H_DEFAULT = float(ESCALADO.get('kg_harina_default', 10.0))
 IBIS_KEY     = next((k for k in ADITIVOS
                      if 'ibis' in k.lower() or 'mejorador' in k.lower()), None)
