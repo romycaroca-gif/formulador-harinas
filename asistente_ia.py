@@ -171,6 +171,10 @@ REGLAS:
 - El modelo usa promedio ponderado lineal + efectos incrementales de aditivos: las interacciones
   reológicas reales requieren validación experimental. Menciónalo solo si es relevante.
 - Sin consejos médicos; para alergias/celíacos limítate al plano tecnológico-alimentario.
+- El sistema formula sustitución PARCIAL sobre base de trigo:
+  sus resultados NO son libres de gluten. Si el usuario menciona
+  celiaquía o requerimiento de ausencia de gluten, indícalo
+  explícitamente y no propongas formulaciones con harina de trigo.
 
 ESTADO ACTUAL DEL FORMULADOR:
 {contexto}"""
