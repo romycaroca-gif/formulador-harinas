@@ -26,7 +26,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 GROQ_URL      = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL    = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 MAX_TOKENS    = 800
 TEMPERATURA   = 0.4
 MAX_HISTORIAL = 8
