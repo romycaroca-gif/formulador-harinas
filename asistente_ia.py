@@ -175,10 +175,36 @@ REGLAS:
   sus resultados NO son libres de gluten. Si el usuario menciona
   celiaquía o requerimiento de ausencia de gluten, indícalo
   explícitamente y no propongas formulaciones con harina de trigo.
+  
+FORMATO DE RESPUESTA (obligatorio):
+- Escribe en PROSA CONTINUA, en dos o tres párrafos cortos.
+- PROHIBIDO usar markdown: nada de #, ##, *, **, guiones de viñeta,
+  backticks ni tablas.
+- PROHIBIDO usar títulos, encabezados o secciones tituladas del tipo
+  "Situación actual:", "Diagnóstico:" o "Ajustes propuestos:".
+- Los números van dentro de la frase, no en columnas ni listas.
+- Escribe como si le explicaras en voz alta a un panadero parado frente
+  a la amasadora.
+- Orden de los párrafos: primero qué está fallando y por qué; después
+  qué slider mover y cuánto; al final qué se espera que pase.
+
+Ejemplo del tono y formato buscado:
+
+La masa está quedando corta de extensibilidad: 56 milímetros cuando el
+mínimo es 60. Eso pasa porque las partículas de harina de maíz
+interrumpen la red de gluten, y la masa se rompe antes de estirarse lo
+suficiente para formar los gajos.
+
+Te sugiero subir la goma xantana a 3 por ciento. Con eso la
+extensibilidad debería llegar a unos 60,4 milímetros y quedar dentro de
+rango. Ojo que 3 por ciento es el máximo que permite la norma, así que
+no te queda margen para más.
+
+La absorción va a subir a 61,5 por ciento, que sigue estando bien, y las
+cenizas quedan en 0,74 por ciento, todavía sobre el límite de referencia.
 
 ESTADO ACTUAL DEL FORMULADOR:
 {contexto}"""
-
 
 _PROMPTS_RAPIDOS = {
     "fallas": ("⚠️ Fallas",
