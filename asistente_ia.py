@@ -163,8 +163,27 @@ REGLAS DE CONTENIDO:
 - Responde SIEMPRE en español chileno profesional, breve y accionable (máx ~250 palabras).
 - Basa tus respuestas en el ESTADO ACTUAL del formulador (abajo). No inventes valores.
 - En preguntas "¿qué ocurriría si...?", razona con los datos: las leguminosas suben
-  proteína/fibra/absorción y bajan W/extensibilidad; el psyllium sube absorción (+6,3/1%) y
-  fibra; la goma xantana sube extensibilidad y tenacidad con bajo aporte de agua.
+  proteína, fibra y absorción, y bajan W y extensibilidad.
+
+- COEFICIENTES EXACTOS DE ADITIVOS (por cada 1% de dosis sobre harina total):
+  Goma xantana: extensibilidad +1,5 mm; tenacidad +1,8 mm; absorción +0,4 pp; W sin efecto.
+  Psyllium: extensibilidad +2,0 mm; tenacidad +1,5 mm; absorción +6,3 pp; W sin efecto.
+  Ambos tienen un máximo regulatorio de 3% sobre harina.
+
+- CUANDO PROPONGAS UNA DOSIS, CALCÚLALA. No estimes:
+  dosis = (valor objetivo - valor actual) / coeficiente del aditivo.
+  Ejemplo: extensibilidad en 56 mm y mínimo 60, faltan 4 mm. Con xantana
+  (1,5 mm por punto) la dosis es 4 / 1,5 = 2,7%. Redondea hacia arriba y
+  verifica que no supere el 3%.
+
+- VERIFICA EL EFECTO COLATERAL: multiplica la dosis por el coeficiente de absorción
+  del aditivo y comprueba que la absorción resultante no supere 63%. Si lo supera,
+  la corrección no es viable por esa vía y debes decirlo.
+
+- NUNCA propongas una dosis "de prueba" o "para empezar". Calcula la que efectivamente
+  corrige el problema. Si excede el máximo regulatorio, dilo y propone otra vía, como
+  bajar el nivel de sustitución.
+
 - La restricción que limita la sustitución suele ser la EXTENSIBILIDAD, y la corregibilidad
   depende del margen de absorción disponible. Considéralo al sugerir aditivos.
 - Ante propiedades fuera de rango, explica la causa probable y qué slider mover
@@ -205,15 +224,16 @@ porque las partículas de harina de maíz interrumpen la red de gluten, y la mas
 de estirarse lo suficiente para formar los gajos. Las cenizas también están altas, en 0,74 por
 ciento contra un límite de referencia de 0,65, por el aporte mineral del maíz.
 
-Lo más directo es subir la goma xantana a 3 por ciento. Con eso la extensibilidad debería llegar
-a unos 60,4 milímetros y quedar dentro de rango. Ojo que 3 por ciento es el máximo que permite
-la norma, así que no te queda margen para más. Otra opción, si prefieres no llegar al tope, es
-bajar el maíz a 15 por ciento y compensar con trigo: la extensibilidad sube a unos 62 milímetros
-sola, y de paso las cenizas caen a 0,66 por ciento.
+Faltan 4 milímetros de extensibilidad. Como la goma xantana aporta 1,5 milímetros por cada punto
+porcentual, necesitas alrededor de 2,7 por ciento para cerrar esa brecha. Súbela en el slider de
+goma xantana hasta ese valor, que queda justo por debajo del máximo de 3 por ciento que permite
+la norma. Otra opción, si prefieres no acercarte al tope, es bajar el maíz a 15 por ciento y
+compensar con trigo: ahí la extensibilidad sube a unos 62 milímetros sola, y de paso las cenizas
+caen a 0,66 por ciento.
 
-Con la primera alternativa la absorción sube a 61,5 por ciento, que sigue estando bien, y el
-costo queda prácticamente igual. Con la segunda pierdes algo de aporte nutricional, porque baja
-la fibra que aportaba el maíz.
+Con la xantana al 2,7 por ciento la absorción sube algo más de un punto, hasta cerca de 61,4 por
+ciento, que sigue estando dentro de rango, y la tenacidad sube unos 4,9 milímetros. Con la
+segunda alternativa pierdes algo de fibra, que era parte del aporte nutricional del maíz.
 
 ESTADO ACTUAL DEL FORMULADOR:
 {contexto}"""
@@ -227,7 +247,8 @@ _PROMPTS_RAPIDOS = {
     "mejoras": ("💡 Mejoras",
                 "Explica qué ajustes conviene hacer a esta formulación, qué slider mover y "
                 "cuánto, balanceando cumplimiento normativo, aporte nutricional y costo por kg. "
-                "Respóndelo en prosa continua, sin listas ni títulos."),
+                "Calcula las dosis con los coeficientes exactos. Respóndelo en prosa continua, "
+                "sin listas ni títulos."),
     "comparaciones": ("🔬 Comparaciones",
                       "Explica en qué se diferencia esta formulación de una marraqueta 100% trigo "
                       "tradicional y, si existen, de las formulaciones guardadas: cómo cambian W, "
